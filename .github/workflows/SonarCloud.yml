@@ -1,0 +1,36 @@
+name: CI with SonarCloud
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test-and-analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven
+
+      - name: Install dependencies
+        run: mvn install -DskipTests
+
+      - name: SonarCloud Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn sonar:sonar -Dsonar.projectKey=Goblin-Hub-Corporation_ghc-profile-api -Dsonar.organization=goblin-hub-corporation -Dsonar.host.url=https://sonarcloud.io
