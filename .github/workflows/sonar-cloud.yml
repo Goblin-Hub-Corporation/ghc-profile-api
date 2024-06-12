@@ -1,4 +1,4 @@
-name: CI with SonarCloud
+name: Lint with SonarCloud
 
 on:
   pull_request:
