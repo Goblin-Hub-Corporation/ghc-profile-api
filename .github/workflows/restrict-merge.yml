@@ -1,0 +1,16 @@
+name: Restrict merge to main
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  restrict-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if the PR is from allowed branch
+        if: github.event.pull_request.head.ref != 'develop'
+        run: |
+          echo "Pull requests to main can only be merged from the develop branch."
+          exit 1
