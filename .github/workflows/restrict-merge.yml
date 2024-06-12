@@ -9,8 +9,11 @@ jobs:
   restrict-merge:
     runs-on: ubuntu-latest
     steps:
-      - name: Check if the PR is from allowed branch
-        if: github.event.pull_request.head.ref != 'develop'
+      - name: Check if the PR is from allowed branches
         run: |
-          echo "Pull requests to main can only be merged from the develop branch."
-          exit 1
+          if [[ "${{ github.event.pull_request.head.ref }}" == "develop" || "${{ github.event.pull_request.head.ref }}" == hotfix/* ]]; then
+            echo "Merge allowed"
+          else
+            echo "Pull requests to main can only be merged from the develop or hotfix/* branches."
+            exit 1
+
